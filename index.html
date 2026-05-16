@@ -513,18 +513,7 @@
     transition: background 0.2s;
   }
   .btn-cancel:hover { background: rgba(255,255,255,0.12); }
-  .owner-trigger {
-    position: fixed; bottom: 20px; right: 20px; z-index: 50;
-    width: 48px; height: 48px;
-    background: rgba(255,255,255,0.08);
-    border: 1.5px solid rgba(255,255,255,0.15);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; font-size: 1.2rem;
-    transition: all 0.2s;
-    backdrop-filter: blur(10px);
-  }
-  .owner-trigger:hover { background: rgba(232,35,26,0.3); border-color: var(--red); }
+
   .owner-pass-screen {
     text-align: center; padding: 10px 0;
   }
@@ -562,9 +551,9 @@
   <div class="header">
     <div class="bear-wrap">
       <div class="bear-halo"></div>
-      <img src="c2112e94-c647-4fea-a2a2-02aca8273816.png" alt="Joy Cannot Bear" class="bear-img" id="bearImg"
+      <img src="c2112e94-c647-4fea-a2a2-02aca8273816.png" alt="Joy Cannot Bear" class="bear-img" id="bearImg" onclick="secretTap()" style="cursor:default;"
         onerror="this.style.display='none'; document.getElementById('bearFallback').style.display='flex';">
-      <div id="bearFallback" style="display:none; width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,#e8231a,#f5c800);align-items:center;justify-content:center;font-size:3rem;border:4px solid var(--yellow);box-shadow:0 0 0 4px var(--red),0 0 30px var(--yellow);">🐻</div>
+      <div id="bearFallback" onclick="secretTap()" style="display:none; cursor:default; width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,#e8231a,#f5c800);align-items:center;justify-content:center;font-size:3rem;border:4px solid var(--yellow);box-shadow:0 0 0 4px var(--red),0 0 30px var(--yellow);">🐻</div>
     </div>
     <div class="logo-text">
       <span class="logo-joy">Joy </span><span class="logo-cannot">Cannot</span>
@@ -651,7 +640,7 @@
 </div>
 
 <!-- Owner Panel Trigger -->
-<div class="owner-trigger" onclick="openOwnerLogin()" title="Owner Panel">⚙️</div>
+
 
 <!-- Success Popup -->
 <div class="overlay" id="successOverlay">
@@ -700,6 +689,25 @@
         </div>
       </div>
       <div class="owner-group">
+        <label>🐻 Upload Foto Beruang</label>
+        <div id="bearDropzone" onclick="document.getElementById('ownerBearFile').click()" style="
+          border: 2px dashed rgba(255,255,255,0.2); border-radius: 12px;
+          padding: 18px; text-align: center; cursor: pointer;
+          transition: border-color 0.2s, background 0.2s;
+          background: rgba(255,255,255,0.04);
+        " onmouseover="this.style.borderColor='var(--yellow)';this.style.background='rgba(245,200,0,0.06)'"
+           onmouseout="this.style.borderColor='rgba(255,255,255,0.2)';this.style.background='rgba(255,255,255,0.04)'">
+          <div style="font-size:2rem;margin-bottom:6px;">📁</div>
+          <div style="font-family:'Fredoka One',cursive;font-size:0.9rem;color:rgba(255,255,255,0.6);">Klik untuk pilih foto</div>
+          <div style="font-size:0.72rem;color:rgba(255,255,255,0.3);margin-top:3px;font-weight:600;">PNG, JPG, WEBP</div>
+        </div>
+        <input type="file" id="ownerBearFile" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none;" onchange="previewBear(event)">
+        <div id="bearPreviewWrap" style="margin-top:10px;display:none;text-align:center;">
+          <img id="bearPreviewImg" src="" alt="Preview Bear" style="max-width:90px;border-radius:50%;border:3px solid var(--yellow);box-shadow:0 0 15px rgba(245,200,0,0.3);">
+          <div style="font-size:0.75rem;color:#22c55e;font-weight:700;margin-top:6px;" id="bearFileName"></div>
+        </div>
+      </div>
+      <div class="owner-group">
         <label>🗳️ Vote Link URL</label>
         <input type="url" id="ownerVoteUrl" placeholder="https://...">
       </div>
@@ -733,13 +741,25 @@
 let settings = JSON.parse(localStorage.getItem('jc_settings') || '{}');
 let ownerPassword = localStorage.getItem('jc_pass') || 'joycannot123';
 
+// ====== SECRET ACCESS ======
+let tapCount = 0, tapTimer = null;
+function secretTap() {
+  tapCount++;
+  clearTimeout(tapTimer);
+  tapTimer = setTimeout(() => { tapCount = 0; }, 1500);
+  if (tapCount >= 7) { tapCount = 0; openOwnerLogin(); }
+}
+
 // ====== INIT ======
 function init() {
   if (settings.qrisUrl) renderQRIS(settings.qrisUrl);
+  if (settings.bearBase64) applyBearImage(settings.bearBase64);
   if (settings.voteUrl) document.getElementById('voteLink').href = settings.voteUrl;
   if (settings.voteLabel) document.getElementById('voteLinkLabel').textContent = settings.voteLabel;
   if (settings.webUrl) document.getElementById('websiteLink').href = settings.webUrl;
   if (settings.webLabel) document.getElementById('websiteLinkLabel').textContent = settings.webLabel;
+  // Secret URL param: ?panel=owner
+  if (new URLSearchParams(window.location.search).get('panel') === 'owner') openOwnerLogin();
   generateSparks();
 }
 
@@ -868,6 +888,14 @@ function checkPass() {
 
 function loadOwnerFields() {
   document.getElementById('ownerQrisUrl').value = settings.qrisUrl || '';
+  window._pendingBearData = null;
+  document.getElementById('ownerBearFile').value = '';
+  document.getElementById('bearPreviewWrap').style.display = 'none';
+  if (settings.bearBase64) {
+    document.getElementById('bearPreviewImg').src = settings.bearBase64;
+    document.getElementById('bearFileName').textContent = '✅ Foto tersimpan';
+    document.getElementById('bearPreviewWrap').style.display = 'block';
+  }
   document.getElementById('ownerVoteUrl').value = settings.voteUrl || '';
   document.getElementById('ownerVoteLabel').value = settings.voteLabel || '';
   document.getElementById('ownerWebUrl').value = settings.webUrl || '';
@@ -879,11 +907,56 @@ function loadOwnerFields() {
   }
 }
 
-function isValidQrisUrl(url) {
+function isValidGithubRawUrl(url) {
   try {
     const u = new URL(url);
     return u.hostname === 'raw.githubusercontent.com' && /\.(png|jpg|jpeg|gif|webp)$/i.test(u.pathname);
   } catch { return false; }
+}
+// keep alias
+function isValidQrisUrl(url) { return isValidGithubRawUrl(url); }
+
+function applyBearImage(url) {
+  const img = document.getElementById('bearImg');
+  const fb = document.getElementById('bearFallback');
+  if (url) {
+    img.src = url;
+    img.style.display = 'block';
+    fb.style.display = 'none';
+  }
+}
+
+function previewBear(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const wrap = document.getElementById('bearPreviewWrap');
+  const fileInfo = document.getElementById('bearFileName');
+  fileInfo.textContent = '⏳ Memproses...';
+  wrap.style.display = 'block';
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+      // Compress using canvas — max 600px, quality 0.92
+      const MAX = 600;
+      let w = img.width, h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const compressed = canvas.toDataURL('image/jpeg', 0.92);
+      const kb = Math.round(compressed.length * 0.75 / 1024);
+      document.getElementById('bearPreviewImg').src = compressed;
+      fileInfo.textContent = `✅ ${file.name} · ${kb} KB (HD compressed)`;
+      window._pendingBearData = compressed;
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
 }
 
 function previewQRIS() {
@@ -913,6 +986,7 @@ function saveSettings() {
   const newPass = document.getElementById('ownerNewPass').value;
   if (newPass) { ownerPassword = newPass; localStorage.setItem('jc_pass', newPass); }
   settings.qrisUrl = qrisUrl;
+  if (window._pendingBearData) settings.bearBase64 = window._pendingBearData;
   settings.voteUrl = document.getElementById('ownerVoteUrl').value;
   settings.voteLabel = document.getElementById('ownerVoteLabel').value;
   settings.webUrl = document.getElementById('ownerWebUrl').value;
@@ -921,6 +995,7 @@ function saveSettings() {
 
   // Apply immediately
   if (settings.qrisUrl) renderQRIS(settings.qrisUrl);
+  if (settings.bearBase64) applyBearImage(settings.bearBase64);
   if (settings.voteUrl) document.getElementById('voteLink').href = settings.voteUrl;
   if (settings.voteLabel) document.getElementById('voteLinkLabel').textContent = settings.voteLabel;
   if (settings.webUrl) document.getElementById('websiteLink').href = settings.webUrl;
