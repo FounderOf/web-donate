@@ -347,6 +347,138 @@
     font-weight: 600;
   }
 
+  /* === LEADERBOARD === */
+  .lb-card {
+    margin-bottom: 16px;
+    padding: 0;
+    overflow: hidden;
+  }
+  .lb-header {
+    background: linear-gradient(135deg, rgba(245,200,0,0.12), rgba(232,35,26,0.08));
+    border-bottom: 1px solid rgba(245,200,0,0.15);
+    padding: 16px 20px 14px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .lb-title-wrap { display: flex; align-items: center; gap: 10px; }
+  .lb-trophy { font-size: 1.6rem; animation: trophyPulse 2s ease-in-out infinite; }
+  @keyframes trophyPulse {
+    0%,100% { transform: scale(1) rotate(-5deg); filter: drop-shadow(0 0 6px rgba(245,200,0,0.5)); }
+    50% { transform: scale(1.15) rotate(5deg); filter: drop-shadow(0 0 14px rgba(245,200,0,0.9)); }
+  }
+  .lb-title-text { font-family:'Fredoka One',cursive; font-size:1.1rem; color:var(--yellow); }
+  .lb-subtitle { font-size:0.72rem; color:rgba(255,255,255,0.4); font-weight:700; margin-top:1px; }
+  .lb-count-badge {
+    background: rgba(245,200,0,0.15);
+    border: 1px solid rgba(245,200,0,0.25);
+    border-radius: 100px;
+    padding: 4px 12px;
+    font-family:'Fredoka One',cursive;
+    font-size:0.85rem;
+    color:var(--yellow);
+  }
+  .lb-list { padding: 10px 12px 14px; display:flex; flex-direction:column; gap:8px; }
+  .lb-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 14px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+    animation: lbSlideIn 0.4s ease both;
+  }
+  @keyframes lbSlideIn {
+    from { opacity:0; transform:translateX(-18px); }
+    to { opacity:1; transform:translateX(0); }
+  }
+  .lb-item:hover { transform: translateX(4px); }
+  .lb-item.rank-1 {
+    background: linear-gradient(135deg, rgba(255,215,0,0.12), rgba(255,165,0,0.06));
+    border-color: rgba(255,215,0,0.35);
+    box-shadow: 0 0 20px rgba(255,215,0,0.08);
+  }
+  .lb-item.rank-2 {
+    background: linear-gradient(135deg, rgba(192,192,192,0.1), rgba(150,150,150,0.04));
+    border-color: rgba(192,192,192,0.3);
+  }
+  .lb-item.rank-3 {
+    background: linear-gradient(135deg, rgba(205,127,50,0.1), rgba(160,90,30,0.04));
+    border-color: rgba(205,127,50,0.3);
+  }
+  .lb-item.rank-1::before {
+    content:'';
+    position:absolute;top:0;left:0;right:0;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(255,215,0,0.6),transparent);
+  }
+  .lb-rank {
+    width: 36px; height: 36px; flex-shrink:0;
+    border-radius: 10px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fredoka One',cursive; font-size:1rem;
+  }
+  .lb-rank.r1 { background:linear-gradient(135deg,#FFD700,#FFA500); color:#0a0a0a; box-shadow:0 0 12px rgba(255,215,0,0.5); font-size:1.2rem; }
+  .lb-rank.r2 { background:linear-gradient(135deg,#C0C0C0,#A0A0A0); color:#0a0a0a; }
+  .lb-rank.r3 { background:linear-gradient(135deg,#CD7F32,#A0522D); color:#fff; }
+  .lb-rank.rN { background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.45); font-size:0.85rem; }
+  .lb-info { flex:1; min-width:0; }
+  .lb-name {
+    font-family:'Fredoka One',cursive;
+    font-size:1rem; color:#fff;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .lb-item.rank-1 .lb-name { color:#FFD700; }
+  .lb-msg {
+    font-size:0.72rem; color:rgba(255,255,255,0.4);
+    font-weight:600; white-space:nowrap;
+    overflow:hidden; text-overflow:ellipsis;
+    margin-top:1px;
+  }
+  .lb-amount {
+    font-family:'Fredoka One',cursive;
+    font-size:0.95rem; color:var(--yellow);
+    flex-shrink:0; text-align:right;
+  }
+  .lb-item.rank-1 .lb-amount { font-size:1.05rem; color:#FFD700; text-shadow:0 0 10px rgba(255,215,0,0.5); }
+  .lb-crown {
+    position:absolute; top:-4px; right:10px;
+    font-size:1rem; animation:crownFloat 2.5s ease-in-out infinite;
+  }
+  @keyframes crownFloat {
+    0%,100% { transform:translateY(0) rotate(-8deg); }
+    50% { transform:translateY(-4px) rotate(8deg); }
+  }
+  .lb-empty {
+    text-align:center; padding:24px 16px;
+    color:rgba(255,255,255,0.3);
+    font-weight:700; font-size:0.9rem;
+  }
+  .lb-empty-icon { font-size:2.5rem; display:block; margin-bottom:8px; opacity:0.4; }
+  .lb-item.rank-1::after {
+    content:'';
+    position:absolute;inset:0;
+    background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,0.04) 50%,transparent 70%);
+    animation:lbShimmer 3s ease-in-out infinite;
+  }
+  @keyframes lbShimmer { 0%,100%{opacity:0} 50%{opacity:1} }
+  .lb-manage-item {
+    display:flex;align-items:center;gap:8px;
+    padding:8px 10px;border-radius:10px;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    margin-bottom:6px;
+  }
+  .lb-manage-name { flex:1;font-weight:700;font-size:0.85rem;color:#fff; }
+  .lb-manage-amount { font-family:'Fredoka One',cursive;color:var(--yellow);font-size:0.85rem; }
+  .lb-manage-del {
+    background:rgba(232,35,26,0.2);border:1px solid rgba(232,35,26,0.3);
+    color:#e8231a;border-radius:8px;padding:4px 10px;
+    font-weight:800;font-size:0.78rem;cursor:pointer;
+    transition:background 0.2s;
+  }
+  .lb-manage-del:hover { background:rgba(232,35,26,0.4); }
+
+
   /* === SUCCESS POPUP === */
   .overlay {
     position: fixed; inset: 0; z-index: 100;
@@ -615,6 +747,28 @@
     </div>
   </div>
 
+
+  <!-- Leaderboard -->
+  <div class="section-title">🏆 Hall of Fame Donatur</div>
+  <div class="card lb-card" id="lbCard">
+    <div class="lb-header">
+      <div class="lb-title-wrap">
+        <span class="lb-trophy">🏆</span>
+        <div>
+          <div class="lb-title-text">Top Donatur</div>
+          <div class="lb-subtitle">Pahlawan Joy Cannot ✨</div>
+        </div>
+      </div>
+      <div class="lb-count-badge" id="lbCountBadge">0 orang</div>
+    </div>
+    <div class="lb-list" id="lbList">
+      <div class="lb-empty">
+        <span class="lb-empty-icon">🌟</span>
+        Belum ada donatur nih...<br>Jadilah yang pertama!
+      </div>
+    </div>
+  </div>
+
   <!-- Panel Links -->
   <div class="section-title">🔗 Links</div>
   <div class="panel-links">
@@ -723,6 +877,11 @@
         <label>🌐 Website Label</label>
         <input type="text" id="ownerWebLabel" placeholder="Joy Cannot Official">
       </div>
+      <div class="owner-group" id="lbManageGroup">
+        <label>🏆 Kelola Leaderboard</label>
+        <div id="lbManageList" style="max-height:200px;overflow-y:auto;"></div>
+        <button onclick="clearAllLB()" style="margin-top:8px;width:100%;padding:8px;background:rgba(232,35,26,0.15);border:1px solid rgba(232,35,26,0.3);color:#e8231a;border-radius:10px;font-weight:800;font-size:0.82rem;cursor:pointer;font-family:'Nunito',sans-serif;">🗑️ Hapus Semua Data Leaderboard</button>
+      </div>
       <div class="owner-group">
         <label>🔐 Ganti Password (kosongkan untuk tidak ganti)</label>
         <input type="password" id="ownerNewPass" placeholder="Password baru...">
@@ -761,6 +920,7 @@ function init() {
   // Secret URL param: ?panel=owner
   if (new URLSearchParams(window.location.search).get('panel') === 'owner') openOwnerLogin();
   generateSparks();
+  renderLB();
 }
 
 // ====== SPARKS BG ======
@@ -823,11 +983,71 @@ function backToForm() {
 }
 
 // ====== CONFIRM DONE ======
+let donateClickCount = 0;
+const spamMsgs = [
+  '😭 Bro sabar, donasi sekali aja cukup!',
+  '🤡 Ngeklik mulu, transfernya juga dong~',
+  '💀 Udah tau belum? Double klik ga nambah nominalnya wkwk',
+  '🐻 Joy Cannot bilang: satu klik, satu cinta!',
+  '😤 Iya iya, makasih... tapi sekali aja ya bestie!',
+  '🚨 SPAM DETECTED. Aman bro, cukup sekali!',
+];
+let spamToastTimeout = null;
+
+function showSpamToast(msg) {
+  let toast = document.getElementById('spamToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'spamToast';
+    toast.style.cssText = `
+      position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(80px);
+      background:linear-gradient(135deg,#1a1a1a,#111);
+      border:1.5px solid rgba(232,35,26,0.5);
+      color:#fff;padding:12px 22px;border-radius:100px;
+      font-family:'Nunito',sans-serif;font-weight:800;font-size:0.9rem;
+      z-index:999;white-space:nowrap;
+      box-shadow:0 8px 30px rgba(232,35,26,0.3);
+      transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1),opacity 0.35s;
+      opacity:0;pointer-events:none;
+    `;
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  clearTimeout(spamToastTimeout);
+  // force reflow biar animasi ulang
+  toast.style.transform = 'translateX(-50%) translateY(80px)';
+  toast.style.opacity = '0';
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    toast.style.transform = 'translateX(-50%) translateY(0)';
+    toast.style.opacity = '1';
+  }));
+  spamToastTimeout = setTimeout(() => {
+    toast.style.transform = 'translateX(-50%) translateY(80px)';
+    toast.style.opacity = '0';
+  }, 2800);
+}
+
 function confirmDone() {
+  donateClickCount++;
+  if (donateClickCount > 1) {
+    const msg = spamMsgs[(donateClickCount - 2) % spamMsgs.length];
+    showSpamToast(msg);
+    return;
+  }
+  // Disable tombol biar ada visual feedback
+  const btn = document.querySelector('.btn-done');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '⏳ Diproses...';
+    btn.style.opacity = '0.6';
+    btn.style.cursor = 'not-allowed';
+  }
   const name = document.getElementById('donorName').value.trim() || 'Anonim';
   const amount = parseInt(document.getElementById('donorAmount').value) || 0;
   document.getElementById('popupDonor').textContent = 'dari: ' + name;
   document.getElementById('popupAmount').textContent = 'Rp ' + amount.toLocaleString('id-ID');
+  // Save to leaderboard
+  saveDonorToLB(name, amount, document.getElementById('donorMsg').value.trim());
   document.getElementById('successOverlay').classList.add('show');
   shootConfetti();
 }
@@ -839,6 +1059,15 @@ function closeSuccess() {
   document.getElementById('donorAmount').value = '';
   document.getElementById('donorMsg').value = '';
   document.querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
+  // Reset anti-spam counter & tombol
+  donateClickCount = 0;
+  const btn = document.querySelector('.btn-done');
+  if (btn) {
+    btn.disabled = false;
+    btn.textContent = '✅ Saya Sudah Bayar!';
+    btn.style.opacity = '';
+    btn.style.cursor = '';
+  }
   backToForm();
 }
 
@@ -865,6 +1094,107 @@ const css = document.createElement('style');
 css.textContent = `@keyframes confFly{to{transform:translate(var(--dx),var(--dy));opacity:0;}}`;
 document.head.appendChild(css);
 
+// ====== LEADERBOARD ======
+const LB_KEY = 'jc_leaderboard';
+const LB_MAX = 20; // simpan max 20 entri
+
+function getLBData() {
+  try { return JSON.parse(localStorage.getItem(LB_KEY) || '[]'); } catch { return []; }
+}
+
+function saveLBData(data) {
+  localStorage.setItem(LB_KEY, JSON.stringify(data));
+}
+
+function saveDonorToLB(name, amount, msg) {
+  if (!amount || amount < 1000) return;
+  const data = getLBData();
+  data.push({ name: name || 'Anonim', amount, msg: msg || '', ts: Date.now() });
+  // Sort descending by amount, keep top LB_MAX
+  data.sort((a, b) => b.amount - a.amount);
+  if (data.length > LB_MAX) data.length = LB_MAX;
+  saveLBData(data);
+  renderLB();
+}
+
+function formatRp(n) {
+  if (n >= 1000000) return 'Rp ' + (n/1000000).toFixed(n%1000000===0?0:1) + 'Jt';
+  if (n >= 1000) return 'Rp ' + (n/1000).toFixed(n%1000===0?0:1) + 'K';
+  return 'Rp ' + n.toLocaleString('id-ID');
+}
+
+const RANK_ICONS = ['🥇','🥈','🥉'];
+const RANK_CLASSES = ['r1','r2','r3'];
+const ITEM_RANK_CLASSES = ['rank-1','rank-2','rank-3'];
+
+function renderLB() {
+  const data = getLBData();
+  const list = document.getElementById('lbList');
+  const badge = document.getElementById('lbCountBadge');
+  if (!list) return;
+  badge.textContent = data.length + ' donatur';
+  if (data.length === 0) {
+    list.innerHTML = '<div class="lb-empty"><span class="lb-empty-icon">🌟</span>Belum ada donatur nih...<br>Jadilah yang pertama!</div>';
+    return;
+  }
+  list.innerHTML = data.map((d, i) => {
+    const rankNum = i + 1;
+    const isTop = rankNum <= 3;
+    const rankClass = isTop ? RANK_CLASSES[i] : 'rN';
+    const itemClass = isTop ? ITEM_RANK_CLASSES[i] : '';
+    const rankIcon = isTop ? RANK_ICONS[i] : rankNum;
+    const crown = rankNum === 1 ? '<div class="lb-crown">👑</div>' : '';
+    const msgHtml = d.msg ? `<div class="lb-msg">💬 ${d.msg}</div>` : '';
+    return `
+      <div class="lb-item ${itemClass}" style="animation-delay:${i*0.06}s">
+        ${crown}
+        <div class="lb-rank ${rankClass}">${rankIcon}</div>
+        <div class="lb-info">
+          <div class="lb-name">${escLB(d.name)}</div>
+          ${msgHtml}
+        </div>
+        <div class="lb-amount">${formatRp(d.amount)}</div>
+      </div>`;
+  }).join('');
+}
+
+function escLB(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Owner: render manage list
+function renderLBManage() {
+  const data = getLBData();
+  const el = document.getElementById('lbManageList');
+  if (!el) return;
+  if (data.length === 0) {
+    el.innerHTML = '<div style="color:rgba(255,255,255,0.3);font-size:0.8rem;font-weight:700;padding:6px 0;">Leaderboard kosong.</div>';
+    return;
+  }
+  el.innerHTML = data.map((d, i) => `
+    <div class="lb-manage-item">
+      <div class="lb-manage-name">${i+1}. ${escLB(d.name)}</div>
+      <div class="lb-manage-amount">${formatRp(d.amount)}</div>
+      <button class="lb-manage-del" onclick="deleteLBEntry(${i})">Hapus</button>
+    </div>`).join('');
+}
+
+function deleteLBEntry(idx) {
+  const data = getLBData();
+  data.splice(idx, 1);
+  saveLBData(data);
+  renderLB();
+  renderLBManage();
+}
+
+function clearAllLB() {
+  if (!confirm('Yakin hapus semua data leaderboard?')) return;
+  saveLBData([]);
+  renderLB();
+  renderLBManage();
+}
+
+
 // ====== OWNER PANEL ======
 function openOwnerLogin() {
   document.getElementById('ownerPass').value = '';
@@ -887,6 +1217,7 @@ function checkPass() {
 }
 
 function loadOwnerFields() {
+  renderLBManage();
   document.getElementById('ownerQrisUrl').value = settings.qrisUrl || '';
   window._pendingBearData = null;
   document.getElementById('ownerBearFile').value = '';
